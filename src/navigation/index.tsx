@@ -9,7 +9,6 @@ import * as React from 'react';
 import {ColorSchemeName} from 'react-native';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
-import BottomTabNavigator from './BottomTabNavigator';
 import {HeaderCloseBtn} from '../components/HeaderCloseBtn'
 import {HeaderBackBtn} from "../components/HeaderBackBtn";
 import {HomeScreen} from "../screens/home";
@@ -78,7 +77,7 @@ const IosModalNavigation = () => {
             })}
             mode={'modal'}
         >
-            <Stack.Screen name='MainNavigation' component={HomeScreen} options={{headerShown:false}}/>
+            <Stack.Screen name='MainNavigation' component={SecondStackNavigator} options={{headerShown:false}}/>
             <Stack.Screen name='FilterModalNavigation' component={FilterModalNavigator} options={{headerShown:false}}/>
         </Stack.Navigator>
     )
@@ -87,14 +86,8 @@ const IosModalNavigation = () => {
 
 const SecondStackNavigator = () => {
     return(
-        <Stack.Navigator
-            screenOptions={{
-                headerTitleAlign: 'left',
-                headerTitleStyle: {fontWeight:'bold', fontSize: 16},
-                headerLeft: () => <HeaderBackBtn />
-            }}
-        >
-            <Stack.Screen name="Tab" component={BottomTabNavigator} options={{headerShown: false}}/>
+        <Stack.Navigator>
+            <Stack.Screen name="Tab" component={HomeScreen} options={{headerShown: false}}/>
 
             {/* page */}
         </Stack.Navigator>
