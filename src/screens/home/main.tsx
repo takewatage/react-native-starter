@@ -24,16 +24,11 @@ export default function HomeScreen() {
     ]);
     const safeArea = useSafeAreaInsets()
 
-    const _renderTabBar = (props: Props) => {
+    const _renderTabBar = (props: any) => {
         return(
             <View>
                 <View style={{width:'100%', height: safeArea.top}}/>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems:'center'}}>
-                    <StatusBar
-                        barStyle={'light-content'}
-                        backgroundColor="transparent"
-                        translucent
-                    />
                     <TabBar
                         {...props}
                         renderLabel={({ route, focused, color }) => (
