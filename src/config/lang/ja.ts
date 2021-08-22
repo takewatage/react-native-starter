@@ -1,0 +1,30 @@
+import {LangIf} from 'src/config/lang/langIf'
+
+const ja: LangIf = {
+	title: 'ファミスト',
+	home: 'ホーム',
+	share: '共有',
+	setting: '設定',
+	shopping: '買い物',
+	delete: '削除',
+	create: '作成',
+	edit: '編集',
+	update: '更新',
+    move: '移動',
+	itemName: '商品名',
+	category: 'カテゴリー',
+	addCategory: 'カテゴリーを追加',
+	selectCategory: 'カテゴリーを選択して下さい',
+	stockQuantity: '在庫数',
+    unit: '単位',
+    editUnit: '単位を編集',
+    confirm: '決定',
+	numberTap: '*上の個数をタップでも入力できます',
+	bestBefore: '賞味期限',
+	set: '設定する',
+	warning: '注意',
+	danger: '危険',
+	tabManage: 'タブ管理',
+    all: '全て',
+}
+export default ja

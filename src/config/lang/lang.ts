@@ -1,0 +1,30 @@
+import { LangIf } from 'src/config/lang/langIf'
+
+const lang: LangIf = {
+	title: 'title',
+	home: 'home',
+	share: 'share',
+	setting: 'setting',
+	delete: 'delete',
+	shopping: 'shopping',
+	edit: 'edit',
+	create: 'create',
+	update: 'update',
+    move: 'move',
+	itemName: 'itemName',
+	category: 'category',
+	addCategory: 'addCategory',
+	selectCategory: 'selectCategory',
+	stockQuantity: 'stockQuantity',
+    unit: 'unit',
+    editUnit: 'editUnit',
+    confirm: 'confirm',
+	numberTap: 'numberTap',
+	bestBefore: 'bestBefore',
+	set: 'set',
+	warning: 'warning',
+	danger: 'danger',
+	tabManage: 'tabManage',
+    all: 'all',
+}
+export default lang
