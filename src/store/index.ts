@@ -1,17 +1,37 @@
-import {configureStore, combineReducers, getDefaultMiddleware} from '@reduxjs/toolkit'
+import {configureStore, combineReducers} from '@reduxjs/toolkit'
+import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 
 import token from './modules/token'
+import {mainDateReducers} from './modules/mainDate'
+import {AsyncStorage} from "react-native";
 
-const rootReducer = combineReducers({
-    token: token.reducer,
-})
+// const rootReducer = combineReducers({
+//     token: token.reducer,
+//     mainDate: mainDateReducers
+// })
+
+const persistConfig = {
+    key: 'root',
+    storage: AsyncStorage,
+    whitelist: ['mainDate'] // Stateは`mainDate`のみStorageに保存する
+}
+
+const persistedReducer = persistReducer(
+    persistConfig,
+    combineReducers({
+        mainDate: mainDateReducers
+    })
+)
+
 
 
 const store = configureStore({
-    reducer: rootReducer,
-	// middleware: getDefaultMiddleware({
-	// 	serializableCheck: false
-	// })
+    reducer: persistedReducer,
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+		serializableCheck: {
+		    ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+        }
+	})
 })
 
 export type RootState = ReturnType<typeof store.getState>

@@ -1,10 +1,25 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Text, View, StyleSheet} from "react-native";
-import {Icon, Image} from "react-native-elements";
+import {Button, Icon, Image} from "react-native-elements";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import {useDispatch, useSelector} from "react-redux";
+import {IMainDate, updateMain} from '../../store/modules/mainDate'
+import dayjs from 'dayjs'
+import {RootState} from "../../store";
+import Ani from "../../models/ani";
 
 export const FirstScreen = () => {
     const safeArea = useSafeAreaInsets()
+    const dispatch = useDispatch()
+    const {mainDate} = useSelector<RootState, {mainDate: Ani}>((state:RootState) => state.mainDate)
+
+    const onTest = () => {
+        console.log("test")
+        dispatch(updateMain({
+            title: '付き合って',
+            date: dayjs().format('YYYY-MM-DD')
+        }))
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: 'transparent' , justifyContent: 'center', height:'100%'}} >
@@ -14,10 +29,15 @@ export const FirstScreen = () => {
                 <Image style={styles.userImg} source={{uri: 'https://placehold.jp/70x70.png'}}/>
             </View>
             <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={[styles.topText, {fontSize: 14, }]}>付き合って</Text>
-                <Text style={[styles.topText, {fontSize: 30, fontWeight: 'bold'}]}>１年 3ヶ月 28日</Text>
+                <Text style={[styles.topText, {fontSize: 14, }]}>{mainDate.title}</Text>
+                <Text style={[styles.topText, {fontSize: 30, fontWeight: 'bold'}]}>{mainDate.date}</Text>
                 <Text style={[styles.topText, {}]}>2020/04/25</Text>
             </View>
+
+
+            <Button onPress={() => {onTest()}}>
+                test
+            </Button>
         </View>
     )
 }
