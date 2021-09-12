@@ -1,22 +1,60 @@
 import React, {useState} from "react";
-import {Text, View, StyleSheet, TextInput, NativeSyntheticEvent, TextInputChangeEventData} from "react-native";
-import {Button, Icon, Image, Input} from "react-native-elements";
+import {
+    Text,
+    View,
+    StyleSheet,
+    TextInput,
+    NativeSyntheticEvent,
+    TextInputChangeEventData,
+    TouchableOpacity, ActivityIndicator
+} from "react-native";
+import {Button, Icon, Image, Input, Overlay} from "react-native-elements";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import Layout from "../../constants/Layout";
 import DateTimePicker, {Event} from '@react-native-community/datetimepicker';
+import dayjs from 'dayjs'
+import PageLoading from "../../components/pageLoading";
+import {updateMain} from '../../store/modules/mainDate'
+import {useDispatch, useSelector} from "react-redux";
+import Ani from "../../models/ani";
+
+
 
 
 
 export const InitScreen = () => {
-    const safeArea = useSafeAreaInsets()
-    const [text, setText] = useState('')
-    const [date, setDate] = useState(new Date(1598051730000))
+    const [load, setLoad] = useState(false)
+    const [date, setDate] = useState(new Date())
     const [show, setShow] = useState(false);
 
+    const dispatch = useDispatch()
+
     const onChange = (event:Event, selectedDate:any) => {
-        console.log(selectedDate)
         const currentDate = selectedDate || date;
-        setDate(currentDate);
+        setShow(false);
+        setDate(currentDate)
+    };
+
+    const onOK = async () => {
+        setLoad(true)
+        setTimeout(() => {
+            // dispatch(updateMain(new Ani({
+            //     id: 'firstDate',
+            //     title: '記念日',
+            //     date: dayjs(date).format("YYYY-MM-DD")
+            // })))
+            dispatch(updateMain({
+                id: 'firstDate',
+                title: '記念日',
+                date: dayjs(date).format("YYYY-MM-DD")
+            }))
+            setLoad(false)
+        }, 1000)
+    }
+
+
+    const showDatepicker = () => {
+        setShow(true);
     };
 
     return (
@@ -24,31 +62,45 @@ export const InitScreen = () => {
             <Text style={styles.topText}>
                 あなたの記念日を{"\n"}登録してください。
             </Text>
-            <TextInput
-                style={styles.input}
-                onChangeText={setText}
-                value={text}
-            />
 
-            <View>
-                {/*<DateTimePicker*/}
-                {/*    testID="dateTimePicker"*/}
-                {/*    value={date}*/}
-                {/*    mode={'date'}*/}
-                {/*    is24Hour={true}*/}
-                {/*    display="default"*/}
-                {/*    onChange={onChange}*/}
-                {/*/>*/}
-            </View>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => showDatepicker()}>
+                <View style={styles.calenderInput}>
+                    <Icon name={'calendar'} type={'feather'} color={"#fff"} style={{marginRight:5}}/>
+                    <Text style={{color:"#fff", fontSize: 18}}>{dayjs(date).format("YYYY年 MM月 DD日")}</Text>
+                </View>
+            </TouchableOpacity>
+
+            {show && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={'date'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                />
+            )}
 
             <Button
                 activeOpacity={0.8}
                 title="決定"
                 buttonStyle={{backgroundColor: "pink"}}
                 containerStyle={{width: 200, borderRadius: 50}}
-                onPress={() => {
-                }}
+                disabled={!date}
+                onPress={() => onOK()}
             />
+
+            <Overlay
+                isVisible={load}
+                overlayStyle={{backgroundColor: 'transparent'}}
+                style={{ flex:1}}>
+
+                <ActivityIndicator
+                    color="pink"
+                    style={{backgroundColor: "transparent"}}
+                    size={'large'}
+                    animating={true} />
+            </Overlay>
         </View>
     )
 }
@@ -56,35 +108,10 @@ export const InitScreen = () => {
 const styles = StyleSheet.create({
     topText: {
         color: '#ffffff',
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
         lineHeight: 25,
-    },
-
-    input: {
-        color: '#ffffff',
-        fontSize: 20,
-        borderBottomColor: '#ffffff',
-        borderBottomWidth: 1,
-        marginBottom: 20,
-        textAlign: 'center',
-        paddingHorizontal: 15,
-        paddingBottom: 5,
-        minWidth: 100
-    },
-
-    position: {
-        width: '100%',
-        alignItems: 'center',
-        marginBottom: 50
-    },
-
-    userImg: {
-        width: 70,
-        height: 70,
-        borderRadius: 100,
-        marginHorizontal: 20
     },
 
     noScreen: {
@@ -94,5 +121,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 20
+    },
+
+    calenderInput: {
+        flexDirection:"row",
+        alignItems:"center",
+        borderWidth: 1,
+        borderRadius: 7,
+        borderColor:"#fff",
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginBottom: 30
     }
 })

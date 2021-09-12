@@ -78,7 +78,6 @@ const IosModalNavigation = () => {
             mode={'modal'}
         >
             <Stack.Screen name='MainNavigation' component={SecondStackNavigator} options={{headerShown:false}}/>
-            <Stack.Screen name='FilterModalNavigation' component={FilterModalNavigator} options={{headerShown:false}}/>
         </Stack.Navigator>
     )
 }
@@ -92,32 +91,4 @@ const SecondStackNavigator = () => {
             {/* page */}
         </Stack.Navigator>
     )
-}
-
-
-const FilterModalNavigator = () => {
-    return (
-        <Stack.Navigator
-            initialRouteName={'FilterScreen'}
-            screenOptions={()  => ({
-                headerTitleAlign: 'center',
-                headerTitleStyle: {fontWeight:'bold', fontSize: 16},
-                headerLeft: () => <HeaderCloseBtn />
-            })}>
-        </Stack.Navigator>
-    );
-}
-
-const PlaceSearchModalNavigator = () => {
-    return (
-        <Stack.Navigator
-            initialRouteName={'PlaceSearchScreen'}
-            screenOptions={({ navigation }) => ({
-                gestureEnabled: false,
-                headerTitleAlign: 'center',
-                headerTitleStyle: {fontWeight:'bold', fontSize: 16},
-                headerLeft: () => <HeaderBackBtn />
-            })}>
-        </Stack.Navigator>
-    );
 }

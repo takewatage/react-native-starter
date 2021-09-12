@@ -11,6 +11,7 @@ import Ani from "../../models/ani";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {InitScreen} from "./InitScreen";
+import {IMainDate} from "../../store/modules/mainDate";
 
 const renderScene = SceneMap({
     first: () => (<FirstScreen />),
@@ -19,8 +20,8 @@ const renderScene = SceneMap({
 
 export default function HomeScreen() {
     const [pageIndex, setPageIndex] = useState(0)
-    const [isMainDate, setIsMainDate] = useState(true)
-    const {mainDate} = useSelector<RootState, {mainDate: Ani}>((state:RootState) => state.mainDate)
+    const {mainDate} = useSelector<RootState, {mainDate: IMainDate}>((state:RootState) => state.mainDate)
+    const [isCheckValue, setCheckValue] = useState(false)
 
     const [routes] = React.useState([
         { key: 'first', title: '記念日' },
@@ -28,20 +29,15 @@ export default function HomeScreen() {
     ]);
     const safeArea = useSafeAreaInsets()
 
-    const [anniversaryDay, setAnniversaryDay] = useState<Ani>(new Ani({}))
-
     React.useEffect(() => {
         console.log(mainDate.id)
-        if(!mainDate.id) {
-            setIsMainDate(false)
+        if(mainDate.id) {
+            setCheckValue(true)
+        } else {
+            setCheckValue(false)
         }
 
     }, [mainDate]);
-
-    const setData = async () => {
-
-    }
-
 
 
     const _renderTabBar = (props: any) => {
@@ -96,7 +92,7 @@ export default function HomeScreen() {
             <ImageBackground style={{width: '100%', height: '100%'}} resizeMode="cover"
                              source={require('../../../assets/images/bg/bg1.jpeg')}>
 
-                    {isMainDate?
+                    {isCheckValue?
                         (
                             mainView()
                         ):

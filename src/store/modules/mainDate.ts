@@ -6,6 +6,7 @@ import {PayloadAction} from "@reduxjs/toolkit/dist/createAction";
 
 
 export interface IMainDate {
+    id?: string
     title?: string
     date?: string
 }
@@ -13,12 +14,12 @@ export interface IMainDate {
 
 
 type State = {
-    mainDate: Ani
+    mainDate: IMainDate
     isLoading?: boolean
 }
 
 const initialState: State = {
-    mainDate: new Ani({}),
+    mainDate: {},
     isLoading: false
 }
 
@@ -33,13 +34,17 @@ const slice = createSlice({
         updateMain: (state, {payload}: PayloadAction<object>) => {
             console.log("-detailSlice-")
             console.log(payload)
-            state.mainDate = new Ani(payload)
+            return {...state, mainDate: payload}
         },
+        reset: (state) => {
+            console.log("-reset-")
+            return {...state, mainDate: {}}
+        }
     },
 })
 
 export const {
-    updateMain
+    updateMain, reset
 } = slice.actions
 
 export const mainDateReducers = slice.reducer

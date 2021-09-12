@@ -1,51 +1,62 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {Text, View, StyleSheet} from "react-native";
 import {Button, Icon, Image} from "react-native-elements";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {useDispatch, useSelector} from "react-redux";
-import {IMainDate, updateMain} from '../../store/modules/mainDate'
-import dayjs from 'dayjs'
+import {IMainDate, reset} from '../../store/modules/mainDate'
+import {NavigationProp, useNavigation} from '@react-navigation/native'
 import {RootState} from "../../store";
 import Ani from "../../models/ani";
+import dayjs from 'dayjs'
 
 export const FirstScreen = () => {
     const safeArea = useSafeAreaInsets()
     const dispatch = useDispatch()
-    const {mainDate} = useSelector<RootState, {mainDate: Ani}>((state:RootState) => state.mainDate)
+    const navigation = useNavigation()
+    const {mainDate} = useSelector<RootState, {mainDate: IMainDate}>((state:RootState) => state.mainDate)
+    const [ani, setAni] = useState(new Ani({}).getPostable() as Ani)
 
-    const onTest = () => {
-        console.log("test")
-        dispatch(updateMain({
-            title: '付き合って',
-            date: dayjs().format('YYYY-MM-DD')
-        }))
+    useEffect(() => {
+        setAni(new Ani(mainDate))
+    }, [])
+
+    const onReset = () => {
+        console.log("onReset")
+        dispatch(reset())
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: 'transparent' , justifyContent: 'center', height:'100%'}} >
-            <View style={[{flexDirection: 'row', justifyContent: 'center'}, styles.position]}>
-                <Image style={styles.userImg} source={{uri: 'https://placehold.jp/70x70.png'}}/>
-                <Icon size={30} name={'heart'} type={'font-awesome'} color={'#ffffff'}/>
-                <Image style={styles.userImg} source={{uri: 'https://placehold.jp/70x70.png'}}/>
-            </View>
-            <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={[styles.topText, {fontSize: 14, }]}>{mainDate.title}</Text>
-                <Text style={[styles.topText, {fontSize: 30, fontWeight: 'bold'}]}>{mainDate.date}</Text>
-                <Text style={[styles.topText, {}]}>2020/04/25</Text>
-            </View>
+        <>
+        {
+            ani.id?
+                (<View style={{ flex: 1, backgroundColor: 'transparent' , justifyContent: 'center', height:'100%'}} >
+                    <View style={[{flexDirection: 'row', justifyContent: 'center'}, styles.position]}>
+                        <Image style={styles.userImg} source={{uri: 'https://placehold.jp/70x70.png'}}/>
+                        <Icon size={30} name={'heart'} type={'font-awesome'} color={'#ffffff'}/>
+                        <Image style={styles.userImg} source={{uri: 'https://placehold.jp/70x70.png'}}/>
+                    </View>
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={[styles.topText, {fontSize: 18, }]}>{mainDate.title}</Text>
+                        <Text style={[styles.topText, {fontSize: 40, fontWeight: 'bold', letterSpacing: 2}]}>{ani.countUntilToday()}</Text>
+                        <Text style={[styles.topText, {}]}>{dayjs(ani.date).format('YYYY年MM月DD日')}</Text>
+                    </View>
 
 
-            <Button onPress={() => {onTest()}}>
-                test
-            </Button>
-        </View>
+                    <Button title={'rreset'} onPress={() => {onReset()}} />
+                </View>)
+                :
+                (<>
+                </>)
+        }
+        </>
     )
 }
 
 const styles = StyleSheet.create({
     topText: {
         color: '#ffffff',
-        marginBottom: 10
+        marginBottom: 10,
+        fontSize: 18
     },
 
     position: {
