@@ -1,4 +1,4 @@
-import {Text, ImageBackground, StatusBar, StyleSheet, View} from "react-native";
+import {Text, ImageBackground, StatusBar, StyleSheet, View, TouchableNativeFeedback} from "react-native";
 import * as React from "react";
 import {useState} from "react";
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
@@ -12,6 +12,10 @@ import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {InitScreen} from "./InitScreen";
 import {IMainDate} from "../../store/modules/mainDate";
+import MenuDrawer from 'react-native-side-drawer'
+import SideMenu from "../../components/SideMenu";
+
+
 
 const renderScene = SceneMap({
     first: () => (<FirstScreen />),
@@ -20,8 +24,9 @@ const renderScene = SceneMap({
 
 export default function HomeScreen() {
     const [pageIndex, setPageIndex] = useState(0)
-    const {mainDate} = useSelector<RootState, {mainDate: IMainDate}>((state:RootState) => state.mainDate)
+    const {myAnniversary} = useSelector<RootState, {myAnniversary: IMainDate}>((state:RootState) => state.mainDate)
     const [isCheckValue, setCheckValue] = useState(false)
+    const [isSideMenu, setIsSideMenu] = useState(false)
 
     const [routes] = React.useState([
         { key: 'first', title: '記念日' },
@@ -30,14 +35,20 @@ export default function HomeScreen() {
     const safeArea = useSafeAreaInsets()
 
     React.useEffect(() => {
-        console.log(mainDate.id)
-        if(mainDate.id) {
+        console.log(myAnniversary.id)
+        if(myAnniversary.id) {
             setCheckValue(true)
         } else {
             setCheckValue(false)
         }
 
-    }, [mainDate]);
+    }, [myAnniversary]);
+
+    const onMenu = () => {
+        console.log("onMenu")
+
+        setIsSideMenu(true)
+    }
 
 
     const _renderTabBar = (props: any) => {
@@ -63,8 +74,11 @@ export default function HomeScreen() {
                         style={{ backgroundColor: 'transparent', height: 60, flexGrow: 1}}
                         activeColor={'#ffffff'}
                     />
-                    <Ripple rippleColor={'pink'} style={styles.tabBarIcon}>
-                        <Icon style={{}} size={20} name={'pencil-outline'} type={'ionicon'} color={'white'}/>
+                    <Ripple
+                        style={styles.tabBarIcon}
+                        rippleColor={"pink"}
+                        onPressOut={() => {onMenu()}}>
+                        <Icon style={{}} size={25} name={'menu'} type={'feather'} color={'white'}/>
                     </Ripple>
                 </View>
             </View>
@@ -73,17 +87,27 @@ export default function HomeScreen() {
 
     const mainView = () => {
         return (
-            <TabView
-                lazy
-                style={{backgroundColor:'transparent'}}
-                sceneContainerStyle={{backgroundColor:'transparent'}}
-                swipeEnabled={true}
-                navigationState={{ index:pageIndex, routes }}
-                renderScene={renderScene}
-                onIndexChange={setPageIndex}
-                renderTabBar={_renderTabBar}
-                initialLayout={{width: Layout.window.width}}
-            />
+            <MenuDrawer
+                open={isSideMenu}
+                drawerContent={<SideMenu isOpen={isSideMenu} setOpen={setIsSideMenu}/>}
+                drawerPercentage={80}
+                animationTime={250}
+                overlay={true}
+                opacity={0.4}
+
+            >
+                <TabView
+                    lazy
+                    style={{backgroundColor:'transparent'}}
+                    sceneContainerStyle={{backgroundColor:'transparent'}}
+                    swipeEnabled={true}
+                    navigationState={{ index:pageIndex, routes }}
+                    renderScene={renderScene}
+                    onIndexChange={setPageIndex}
+                    renderTabBar={_renderTabBar}
+                    initialLayout={{width: Layout.window.width}}
+                />
+            </MenuDrawer>
         )
     }
 
@@ -118,6 +142,7 @@ const styles = StyleSheet.create({
         width: '80%',
     },
     tabBarIcon: {
+        padding:15,
         width: 50,
         height: 50,
         alignItems: 'center',

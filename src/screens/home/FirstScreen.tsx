@@ -11,19 +11,13 @@ import dayjs from 'dayjs'
 
 export const FirstScreen = () => {
     const safeArea = useSafeAreaInsets()
-    const dispatch = useDispatch()
     const navigation = useNavigation()
-    const {mainDate} = useSelector<RootState, {mainDate: IMainDate}>((state:RootState) => state.mainDate)
+    const {myAnniversary} = useSelector<RootState, {myAnniversary: IMainDate}>((state:RootState) => state.mainDate)
     const [ani, setAni] = useState(new Ani({}).getPostable() as Ani)
 
     useEffect(() => {
-        setAni(new Ani(mainDate))
+        setAni(new Ani(myAnniversary))
     }, [])
-
-    const onReset = () => {
-        console.log("onReset")
-        dispatch(reset())
-    }
 
     return (
         <>
@@ -36,13 +30,10 @@ export const FirstScreen = () => {
                         <Image style={styles.userImg} source={{uri: 'https://placehold.jp/70x70.png'}}/>
                     </View>
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={[styles.topText, {fontSize: 18, }]}>{mainDate.title}</Text>
+                        <Text style={[styles.topText, {fontSize: 18, }]}>{myAnniversary.title}</Text>
                         <Text style={[styles.topText, {fontSize: 40, fontWeight: 'bold', letterSpacing: 2}]}>{ani.countUntilToday()}</Text>
                         <Text style={[styles.topText, {}]}>{dayjs(ani.date).format('YYYY年MM月DD日')}</Text>
                     </View>
-
-
-                    <Button title={'rreset'} onPress={() => {onReset()}} />
                 </View>)
                 :
                 (<>

@@ -14,13 +14,11 @@ export interface IMainDate {
 
 
 type State = {
-    mainDate: IMainDate
-    isLoading?: boolean
+    myAnniversary: IMainDate
 }
 
 const initialState: State = {
-    mainDate: {},
-    isLoading: false
+    myAnniversary: {},
 }
 
 // type response = {mainDate: IMainDate}
@@ -34,11 +32,11 @@ const slice = createSlice({
         updateMain: (state, {payload}: PayloadAction<object>) => {
             console.log("-detailSlice-")
             console.log(payload)
-            return {...state, mainDate: payload}
+            return {...state, myAnniversary: payload}
         },
         reset: (state) => {
             console.log("-reset-")
-            return {...state, mainDate: {}}
+            return {...state, myAnniversary: {}}
         }
     },
 })

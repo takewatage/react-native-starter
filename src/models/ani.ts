@@ -44,15 +44,15 @@ export default class Ani extends Model {
 
 		const today = dayjs()
 		const aniDay = dayjs(this.date)
+		if(today.format('YYYY-MM-DD') == aniDay.format('YYYY-MM-DD')) {
+			return '1日目！'
+		}
+
 		dayjs.extend(utc)
 		dayjs.extend(duration)
 		const Y = today.diff(aniDay, 'years')
 		const M = today.subtract(Y, 'y').diff(aniDay, 'months')
 		const D = today.add(1,'d').subtract(Y, 'y').subtract(M, 'M').diff(aniDay, 'days')
-
-
-		console.log()
-
 
 
 

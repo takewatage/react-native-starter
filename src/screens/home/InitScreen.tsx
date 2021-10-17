@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, createRef} from "react";
 import {
     Text,
     View,
@@ -6,7 +6,7 @@ import {
     TextInput,
     NativeSyntheticEvent,
     TextInputChangeEventData,
-    TouchableOpacity, ActivityIndicator
+    TouchableOpacity, ActivityIndicator, Alert, Platform
 } from "react-native";
 import {Button, Icon, Image, Input, Overlay} from "react-native-elements";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -17,6 +17,8 @@ import PageLoading from "../../components/pageLoading";
 import {updateMain} from '../../store/modules/mainDate'
 import {useDispatch, useSelector} from "react-redux";
 import Ani from "../../models/ani";
+import ActionSheet from "react-native-actions-sheet";
+
 
 
 
@@ -26,23 +28,30 @@ export const InitScreen = () => {
     const [load, setLoad] = useState(false)
     const [date, setDate] = useState(new Date())
     const [show, setShow] = useState(false);
+    const actionRef = React.useRef(null)
 
     const dispatch = useDispatch()
 
     const onChange = (event:Event, selectedDate:any) => {
-        const currentDate = selectedDate || date;
-        setShow(false);
+        if (Platform.OS == 'android') {
+            const currentDate = selectedDate || date;
+            setShow(false);
+            setDate(currentDate)
+            return
+        }
+        const currentDate = selectedDate || date
         setDate(currentDate)
     };
 
     const onOK = async () => {
+
+        if(dayjs(date) > dayjs()) {
+            Alert.alert('本日より前の日にちを選択してください。')
+            return
+        }
+
         setLoad(true)
         setTimeout(() => {
-            // dispatch(updateMain(new Ani({
-            //     id: 'firstDate',
-            //     title: '記念日',
-            //     date: dayjs(date).format("YYYY-MM-DD")
-            // })))
             dispatch(updateMain({
                 id: 'firstDate',
                 title: '記念日',
@@ -54,7 +63,12 @@ export const InitScreen = () => {
 
 
     const showDatepicker = () => {
-        setShow(true);
+        if(Platform.OS=='ios') {
+            // @ts-ignore
+            actionRef.current?.setModalVisible()
+        } else {
+            setShow(true);
+        }
     };
 
     return (
@@ -70,16 +84,23 @@ export const InitScreen = () => {
                 </View>
             </TouchableOpacity>
 
-            {show && (
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    value={date}
-                    mode={'date'}
-                    is24Hour={true}
-                    display="default"
-                    onChange={onChange}
-                />
-            )}
+            {show &&
+            <DateTimePicker
+                style={{width: Layout.window.width}}
+                value={date}
+                is24Hour={true}
+                locale="ja"
+                display={Platform.OS == 'ios' ? 'spinner' : 'default'}
+                minuteInterval={10}
+                onTouchCancel={() => {
+                    console.log("cancel")
+                }}
+                onChange={onChange}
+                onAccessibilityAction={() => {
+                    console.log("cancel!!!!")
+                }}
+            />
+            }
 
             <Button
                 activeOpacity={0.8}
@@ -89,6 +110,28 @@ export const InitScreen = () => {
                 disabled={!date}
                 onPress={() => onOK()}
             />
+
+            <ActionSheet
+                ref={actionRef}
+                gestureEnabled
+                delayActionSheetDraw={true}
+            >
+                <DateTimePicker
+                    style={{width: Layout.window.width}}
+                    value={date}
+                    is24Hour={true}
+                    locale="ja"
+                    display={Platform.OS == 'ios' ? 'spinner' : 'default'}
+                    minuteInterval={10}
+                    onTouchCancel={() => {
+                        console.log("cancel")
+                    }}
+                    onChange={onChange}
+                    onAccessibilityAction={() => {
+                        console.log("cancel!!!!")
+                    }}
+                />
+            </ActionSheet>
 
             <Overlay
                 isVisible={load}
