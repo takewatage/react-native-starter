@@ -4,6 +4,7 @@ import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } fro
 import token from './modules/token'
 import {mainDateReducers} from './modules/mainDate'
 import {AsyncStorage} from "react-native";
+import {pairsReducers} from "./modules/pairs";
 
 // const rootReducer = combineReducers({
 //     token: token.reducer,
@@ -13,13 +14,14 @@ import {AsyncStorage} from "react-native";
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['mainDate'] // Stateは`mainDate`のみStorageに保存する
+    whitelist: ['pairs'] // Stateは`pairCode`のみStorageに保存する
 }
 
 const persistedReducer = persistReducer(
     persistConfig,
     combineReducers({
-        mainDate: mainDateReducers
+        mainDate: mainDateReducers,
+        pairs: pairsReducers,
     })
 )
 

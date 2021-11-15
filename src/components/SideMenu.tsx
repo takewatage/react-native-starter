@@ -13,7 +13,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Icon, ListItem, Overlay} from "react-native-elements";
 import {reset} from "../store/modules/mainDate";
 import {useDispatch} from "react-redux";
-
+import {useNavigation} from '@react-navigation/native'
 
 export type Props = {
     isOpen: boolean,
@@ -25,6 +25,7 @@ const SideMenu:React.VFC<Props> = (props) => {
     const [load, setLoad] = useState(false)
     const isOpen = props.isOpen
     const dispatch = useDispatch()
+    const navigation = useNavigation()
 
     useState(() => {
     })
@@ -42,6 +43,11 @@ const SideMenu:React.VFC<Props> = (props) => {
             {text: 'いいえ', onPress:() => {return}}
         ])
     };
+
+    // 編集
+    const onEdit = () => {
+        navigation.navigate("TopEditScreen")
+    }
 
     return (
         <>
@@ -65,9 +71,22 @@ const SideMenu:React.VFC<Props> = (props) => {
                         onReset()
                     }}
                 >
-                    <ListItem>
+                    <ListItem bottomDivider>
                         <ListItem.Content>
                            <ListItem.Title>記念日をリセットする</ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                </TouchableHighlight>
+                <TouchableHighlight
+                    underlayColor={"pink"}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        onEdit()
+                    }}
+                >
+                    <ListItem bottomDivider>
+                        <ListItem.Content>
+                            <ListItem.Title>編集</ListItem.Title>
                         </ListItem.Content>
                     </ListItem>
                 </TouchableHighlight>

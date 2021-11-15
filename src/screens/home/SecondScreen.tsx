@@ -53,7 +53,7 @@ export const SecondScreen = () => {
                 keyExtractor={item => item.id.toString()}
             />
 
-            <Ripple style={[styles.Icon, {bottom: safeArea.bottom}]} onPress={() => console.log('hello')}>
+            <Ripple style={[styles.Icon, {bottom: safeArea.bottom+ 30}]} onPress={() => console.log('hello')}>
                 <Icon
                     name='plus'
                     type='antdesign'

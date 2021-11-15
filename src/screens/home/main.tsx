@@ -4,7 +4,7 @@ import {useState} from "react";
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Layout from "../../constants/Layout";
-import {Icon, Image} from "react-native-elements";
+import {Button, Icon, Image} from "react-native-elements";
 import Ripple from "react-native-material-ripple";
 import {FirstScreen, SecondScreen} from "./index";
 import Ani from "../../models/ani";
@@ -14,6 +14,7 @@ import {InitScreen} from "./InitScreen";
 import {IMainDate} from "../../store/modules/mainDate";
 import MenuDrawer from 'react-native-side-drawer'
 import SideMenu from "../../components/SideMenu";
+import FirestoreService from "../../services/FirestoreService";
 
 
 
@@ -45,7 +46,7 @@ export default function HomeScreen() {
     }, [myAnniversary]);
 
     const onMenu = () => {
-        console.log("onMenu")
+        console.log("onMenu!!!!")
 
         setIsSideMenu(true)
     }

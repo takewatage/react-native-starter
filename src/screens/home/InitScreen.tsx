@@ -119,6 +119,7 @@ export const InitScreen = () => {
                 <DateTimePicker
                     style={{width: Layout.window.width}}
                     value={date}
+                    textColor={'#000'}
                     is24Hour={true}
                     locale="ja"
                     display={Platform.OS == 'ios' ? 'spinner' : 'default'}

@@ -12,6 +12,7 @@ import NotFoundScreen from '../screens/NotFoundScreen';
 import {HeaderCloseBtn} from '../components/HeaderCloseBtn'
 import {HeaderBackBtn} from "../components/HeaderBackBtn";
 import {HomeScreen} from "../screens/home";
+import FirestoreService from "../services/FirestoreService";
 
 
 const Stack = createStackNavigator();
@@ -25,7 +26,8 @@ export const Navigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => 
     )
 }
 
-function RootNavigator() {
+const RootNavigator = () => {
+
     return (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Root" component={ModalNavigation} />

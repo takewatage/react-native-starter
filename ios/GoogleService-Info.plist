@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1080034645500-95csm50smp5ia9dtkeajv7fu5fafo9s8.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1080034645500-95csm50smp5ia9dtkeajv7fu5fafo9s8</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAnInfx2WS2yClkTwEjp10VVF5RUSHvAHU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1080034645500</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.anniversaryApp</string>
+	<key>PROJECT_ID</key>
+	<string>anniversaryapp-c0cfc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>anniversaryapp-c0cfc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1080034645500:ios:c65f357defcd9ed0fd4e79</string>
+</dict>
+</plist>

@@ -1,9 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "web": "expo start --web",
     "eject": "expo eject",
     "test": "jest --watchAll"
@@ -12,11 +11,14 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/react-native-action-sheet": "^3.12.0",
     "@expo/vector-icons": "^12.0.0",
     "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/datetimepicker": "3.5.2",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-firebase/app": "^12.9.2",
+    "@react-native-firebase/firestore": "^12.9.2",
     "@react-navigation/bottom-tabs": "5.11.2",
     "@react-navigation/material-top-tabs": "^5.x",
     "@react-navigation/native": "~5.8.10",
@@ -30,18 +32,20 @@
     "dayjs": "^1.10.7",
     "expo": "~42.0.1",
     "expo-asset": "~8.3.2",
-    "expo-constants": "~11.0.1",
+    "expo-constants": "^11.0.1",
     "expo-font": "~9.2.1",
+    "expo-image-picker": "^10.2.3",
     "expo-linking": "~2.3.1",
     "expo-localization": "^10.2.0",
     "expo-splash-screen": "~0.11.2",
     "expo-status-bar": "~1.0.4",
+    "expo-updates": "~0.8.1",
     "expo-web-browser": "~9.2.0",
-    "firebase": "^8.9.1",
+    "firebase": "8.2.3",
     "i18n-js": "^3.8.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
+    "react-native": "~0.63.4",
     "react-native-actions-sheet": "^0.5.4",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "~1.10.2",
@@ -56,6 +60,7 @@
     "react-native-svg": "^12.1.1",
     "react-native-svg-uri": "^1.2.3",
     "react-native-tab-view": "^3.x",
+    "react-native-unimodules": "0.14.10",
     "react-native-vector-icons": "^8.1.0",
     "react-native-web": "~0.13.12",
     "react-redux": "^7.2.4",
@@ -68,5 +73,7 @@
     "jest-expo": "~41.0.0-beta.0",
     "typescript": "~4.0.0"
   },
-  "private": true
+  "private": true,
+  "name": "react-native-starter",
+  "version": "1.0.0"
 }

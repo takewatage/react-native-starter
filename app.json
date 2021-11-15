@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "open_monitor",
-    "slug": "open_monitor",
+    "name": "AnniversaryApp",
+    "slug": "AnniversaryApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -19,16 +19,31 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.takewatage.AnniversaryApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.takewatage.AnniversaryApp"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
+    },
+    "extra": {
+      "appUrl": "http://localhost:5000",
+      "firebase": {
+        "apiKey": "AIzaSyAyJsm9Fit1xcNeYSF4zesPaVrnwYiuibU",
+        "authDomain": "anniversaryapp-c0cfc.firebaseapp.com",
+        "projectId": "anniversaryapp-c0cfc",
+        "storageBucket": "anniversaryapp-c0cfc.appspot.com",
+        "appId": "1:1080034645500:web:1ac8885056ba5ac9fd4e79",
+        "messagingSenderId": "1080034645500",
+        "anniversaryCollection": "anniversary",
+        "pairsCollection": "pairs"
+      }
     }
   }
 }

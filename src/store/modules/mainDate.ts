@@ -9,6 +9,8 @@ export interface IMainDate {
     id?: string
     title?: string
     date?: string
+    userName1?: string
+    userName2?: string
 }
 
 
