@@ -21,7 +21,7 @@ import FirestoreService from "../../services/FirestoreService";
 import {RootState} from "../../store";
 import Pairs from "../../models/pairs";
 import {resetPairCode} from '../../store/modules/pairs'
-import {resetAnniversary} from '../../store/modules/anniversary'
+import {AnniversaryState, resetAnniversary, updatePageLoading, updateCheckLoading, updatePageName, updateAnniversary} from '../../store/modules/anniversary'
 
 
 
@@ -34,7 +34,7 @@ export const InitScreen = () => {
     const [show, setShow] = useState(false);
     const actionRef = React.useRef(null)
 
-    const {pairs} = useSelector<RootState, {pairs: Pairs}>((state:RootState) => state.anniversary)
+    const {pairs, pageLoading} = useSelector<RootState, AnniversaryState>((state:RootState) => state.anniversary)
     const dispatch = useDispatch()
 
     const onChange = (event:Event, selectedDate:any) => {
@@ -55,7 +55,7 @@ export const InitScreen = () => {
             return
         }
 
-        // setLoad(true)
+        dispatch(updatePageLoading(true))
 
         let _pairs = new Pairs({...pairs}) as Pairs
         let _ani: Ani = new Ani({
@@ -71,14 +71,19 @@ export const InitScreen = () => {
 
         console.log(_pairs)
 
-        setLoad(true)
         try {
             await FirestoreService.createAnniversary(_pairs.id, _pairs)
-            setLoad(false)
+            dispatch(updateAnniversary(_pairs.getPostable() as Pairs))
+            dispatch(updatePageLoading(false))
+            dispatch(updateCheckLoading(true))
+            setTimeout(() => {
+                dispatch(updateCheckLoading(false))
+                dispatch(updatePageName('main'))
+            }, 3000)
         }
         catch (e) {
             Alert.alert("データベースエラー", "", [{onPress: () => {
-                    setLoad(false)
+                    dispatch(updatePageLoading(false))
             }}])
         }
 

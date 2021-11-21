@@ -13,8 +13,12 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Icon, ListItem, Overlay} from "react-native-elements";
 import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from '@react-navigation/native'
-import {reset} from '../store/modules/pairs'
+import {resetPairCode} from '../store/modules/pairs'
+import {resetAnniversary, updatePageLoading, updatePageName} from '../store/modules/anniversary'
 import {RootState} from "../store";
+import Ripple from "react-native-material-ripple";
+import FirestoreService from "../services/FirestoreService";
+import Pairs from "../models/pairs";
 
 export type Props = {
     isOpen: boolean,
@@ -28,8 +32,18 @@ const SideMenu:React.VFC<Props> = (props) => {
     const dispatch = useDispatch()
     const navigation = useNavigation()
     const {pairCode} = useSelector<RootState, {pairCode: string}>((state:RootState) => state.pairCode)
+    const {pairs} = useSelector<RootState, {pairs: Pairs}>((state:RootState) => state.anniversary)
+    const [_pairs, set_Pairs] = useState(new Pairs({}))
+
+    const MENU = [
+        {menu: '記念日をリセットする', f: () => onReset()},
+        {menu: '編集(comming soon)', f: () => onEdit()},
+        {menu: 'ログアウト', f: () => onLogOut()},
+    ]
 
     useState(() => {
+        set_Pairs(new Pairs({...pairs}))
+        const ani = _pairs.mainAnniversaryData
     })
 
     const onReset = () => {
@@ -37,9 +51,10 @@ const SideMenu:React.VFC<Props> = (props) => {
             {text: 'はい', onPress: () => {
 
                 setTimeout(async () => {
-                    setLoad(true)
-                    // await dispatch(reset())
-                    setLoad(true)
+                    dispatch(updatePageLoading(true))
+                    await FirestoreService.deleteAnniversary(pairCode, _pairs.mainAnniversaryData?_pairs.mainAnniversaryData.type:"")
+                    dispatch(updatePageLoading(false))
+                    dispatch(updatePageName("init"))
                 }, 1000)
                 }},
             {text: 'いいえ', onPress:() => {return}}
@@ -51,12 +66,17 @@ const SideMenu:React.VFC<Props> = (props) => {
         navigation.navigate("TopEditScreen")
     }
 
+    // ログアウト
     const onLogOut = async() => {
-        setTimeout(async () => {
-            setLoad(true)
-            await dispatch(reset())
-            setLoad(true)
-        }, 1000)
+        console.log('onLogOut')
+        Alert.alert('ログアウトしますか？','', [
+            {text: 'はい', onPress: () => {
+                    setLoad(true)
+                    dispatch(resetPairCode())
+                    dispatch(resetAnniversary())
+            }},
+            {text: 'いいえ', onPress:() => {return}}
+        ])
     }
 
     return (
@@ -74,46 +94,48 @@ const SideMenu:React.VFC<Props> = (props) => {
                 </View>
 
 
-                <TouchableHighlight
-                    underlayColor={"pink"}
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        onReset()
-                    }}
-                >
-                    <ListItem bottomDivider>
-                        <ListItem.Content>
-                           <ListItem.Title>記念日をリセットする</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                </TouchableHighlight>
-                <TouchableHighlight
-                    underlayColor={"pink"}
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        onEdit()
-                    }}
-                >
-                    <ListItem bottomDivider>
-                        <ListItem.Content>
-                            <ListItem.Title>編集</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                </TouchableHighlight>
+                {MENU.map((x,i) => {
+                    return (
+                        <Ripple
+                            rippleColor={'pink'}
+                            onPress={x.f}
+                            key={x.menu}
+                        >
+                            <ListItem bottomDivider>
+                                <ListItem.Content>
+                                    <ListItem.Title>{x.menu}</ListItem.Title>
+                                </ListItem.Content>
+                            </ListItem>
+                        </Ripple>
+                    )
+                })}
+                {/*<TouchableHighlight*/}
+                {/*    underlayColor={"pink"}*/}
+                {/*    activeOpacity={0.8}*/}
+                {/*    onPress={() => {*/}
+                {/*        onEdit()*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <ListItem bottomDivider>*/}
+                {/*        <ListItem.Content>*/}
+                {/*            <ListItem.Title>編集</ListItem.Title>*/}
+                {/*        </ListItem.Content>*/}
+                {/*    </ListItem>*/}
+                {/*</TouchableHighlight>*/}
 
-                <TouchableHighlight
-                    underlayColor={"pink"}
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        onLogOut()
-                    }}
-                >
-                    <ListItem bottomDivider>
-                        <ListItem.Content>
-                            <ListItem.Title>ログアウト</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                </TouchableHighlight>
+                {/*<TouchableHighlight*/}
+                {/*    underlayColor={"pink"}*/}
+                {/*    activeOpacity={0.8}*/}
+                {/*    onPress={() => {*/}
+                {/*        console.log("popopo")*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    <ListItem bottomDivider>*/}
+                {/*        <ListItem.Content>*/}
+                {/*            <ListItem.Title>ログアウト</ListItem.Title>*/}
+                {/*        </ListItem.Content>*/}
+                {/*    </ListItem>*/}
+                {/*</TouchableHighlight>*/}
 
                 <Text>{pairCode}</Text>
             </View>

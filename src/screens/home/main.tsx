@@ -47,16 +47,10 @@ export default function HomeScreen() {
 
     React.useEffect(() => {
         setPairData(new Pairs({...pairs}))
+        return () => {
+            setPairData(new Pairs({})); // This worked for me
+        };
     }, [])
-
-    const fetch = async () => {
-        // dispatch(fetchAnniversary({code: pairCode}))
-
-        // console.log("fetch")
-        // const res = await FirestoreService.getPairs(pairCode)
-        // console.log(new Pairs(res).getPostable())
-        // dispatch(updateAnniversary(res.getPostable() as Pairs))
-    }
 
     const onMenu = () => {
         console.log("onMenu!!!!")
@@ -99,40 +93,32 @@ export default function HomeScreen() {
         )
     }
 
-    const mainView = () => {
-        return (
-            <MenuDrawer
-                open={isSideMenu}
-                drawerContent={<SideMenu isOpen={isSideMenu} setOpen={setIsSideMenu}/>}
-                drawerPercentage={80}
-                animationTime={250}
-                overlay={true}
-                opacity={0.4}
-
-            >
-                <TabView
-                    lazy
-                    style={{backgroundColor:'transparent'}}
-                    sceneContainerStyle={{backgroundColor:'transparent'}}
-                    swipeEnabled={true}
-                    navigationState={{ index:pageIndex, routes }}
-                    renderScene={renderScene}
-                    onIndexChange={setPageIndex}
-                    renderTabBar={_renderTabBar}
-                    initialLayout={{width: Layout.window.width}}
-                />
-            </MenuDrawer>
-        )
-    }
-
     return (
         <View style={[styles.container]}>
             <ImageBackground style={{width: '100%', height: '100%'}} resizeMode="cover"
                              source={require('../../../assets/images/bg/bg.jpeg')}>
 
-                <View>
-                    <Text>OKOKOKOKOKOK</Text>
-                </View>
+                <MenuDrawer
+                    open={isSideMenu}
+                    drawerContent={<SideMenu isOpen={isSideMenu} setOpen={setIsSideMenu}/>}
+                    drawerPercentage={80}
+                    animationTime={250}
+                    overlay={true}
+                    opacity={0.4}
+
+                >
+                    <TabView
+                        lazy
+                        style={{backgroundColor:'transparent'}}
+                        sceneContainerStyle={{backgroundColor:'transparent'}}
+                        swipeEnabled={true}
+                        navigationState={{ index:pageIndex, routes }}
+                        renderScene={renderScene}
+                        onIndexChange={setPageIndex}
+                        renderTabBar={_renderTabBar}
+                        initialLayout={{width: Layout.window.width}}
+                    />
+                </MenuDrawer>
             </ImageBackground>
         </View>
     );

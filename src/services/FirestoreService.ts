@@ -46,6 +46,18 @@ class FirestoreService {
     }
 
 
+    async createAnniversary(code: string, pairs: Pairs) {
+
+        const res:Ani|undefined = pairs.mainAnniversaryData
+        if(res==undefined) return
+
+        await window.db.collection(this.pairsCollection)
+            .doc(code)
+            .collection(this.anniversaryCollection)
+            .doc(res.type)
+            .set({...res.onScheme().getPostable()}, { merge: true })
+
+    }
 
     async getAnniversary(code: string) {
         const anis:Ani[] = []
@@ -60,6 +72,17 @@ class FirestoreService {
                 })
             })
         return anis
+    }
+
+    async deleteAnniversary(code: string, doc: string|undefined) {
+        if(!doc) return
+        await window.db
+            .collection(this.pairsCollection)
+            .doc(code)
+            .collection(this.anniversaryCollection)
+            .doc(doc)
+            .delete()
+
     }
 
     async getPairs(code: string) {
@@ -78,19 +101,6 @@ class FirestoreService {
                 pairs = undefined
             })
         return pairs
-    }
-
-    async createAnniversary(code: string, pairs: Pairs) {
-
-        const res:Ani|undefined = pairs.mainAnniversaryData
-        if(res==undefined) return
-
-        await window.db.collection(this.pairsCollection)
-            .doc(code)
-            .collection(this.anniversaryCollection)
-            .doc()
-            .set({...res.onScheme().getPostable()}, { merge: true })
-
     }
 
 

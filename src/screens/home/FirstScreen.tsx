@@ -10,19 +10,21 @@ import dayjs from 'dayjs'
 import Ripple from "react-native-material-ripple";
 import FirestoreService from "../../services/FirestoreService";
 import Pairs from "../../models/pairs";
+import linq from "linq";
 
 export const FirstScreen = () => {
-    const safeArea = useSafeAreaInsets()
-    const navigation = useNavigation()
     const {pairs} = useSelector<RootState, {pairs: Pairs}>((state:RootState) => state.anniversary)
+    const [pairsData, setPairs] = useState(new Pairs({...pairs}))
 
     useEffect(() => {
+        setPairs(new Pairs({...pairs}))
+        console.log('pairs', pairs)
+        console.log('pairsData', pairsData)
+        return () => {
+            setPairs(new Pairs({}))
+        }
+    }, [pairs])
 
-    }, [])
-
-    const f = async () => {
-
-    }
 
     return (
         <>
@@ -41,8 +43,8 @@ export const FirstScreen = () => {
                         </View>
                     </View>
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        {/*<Text style={[styles.topText, {fontSize: 18, }]}>{myAnniversary.title}</Text>*/}
-                        {/*<Text style={[styles.topText, {fontSize: 40, fontWeight: 'bold', letterSpacing: 2}]}>{ani.countUntilToday()}</Text>*/}
+                        <Text style={[styles.topText, {fontSize: 18, }]}>{pairsData.mainAnniversaryDataTitle}</Text>
+                        <Text style={[styles.topText, {fontSize: 40, fontWeight: 'bold', letterSpacing: 2}]}>{pairsData.countUntilToday()}</Text>
                         {/*<Text style={[styles.topText, {}]}>{dayjs(ani.date).format('YYYY年MM月DD日')}</Text>*/}
                     </View>
                 </View>)

@@ -31,11 +31,9 @@ interface Props {
 
 const AuthProvider = ({ children }: Props):JSX.Element => {
 
-    const [loading, setLoading] = useState(false)
-    const [completeLoading, setCompleteLoading] = useState(false)
     const [pairCodeText, setPairCode] = useState('')
     const {pairCode} = useSelector<RootState, {pairCode: string}>((state:RootState) => state.pairCode)
-    const {pageName, pageLoading, checkLoading} = useSelector<RootState, AnniversaryState>((state:RootState) => state.anniversary)
+    const {pairs, pageName, pageLoading, checkLoading} = useSelector<RootState, AnniversaryState>((state:RootState) => state.anniversary)
 
     const dispatch = useDispatch()
     const colorScheme = useColorScheme();
@@ -43,9 +41,8 @@ const AuthProvider = ({ children }: Props):JSX.Element => {
     useEffect(() => {
 
         if(pairCode) {
-
+            console.log("pairCode???", pairCode)
             dispatch(fetchAnniversary({code: pairCode}))
-
         }
 
     }, [])
@@ -68,8 +65,6 @@ const AuthProvider = ({ children }: Props):JSX.Element => {
 
         res.anniversaries = await FirestoreService.getAnniversary(res.id)
 
-        console.log(res)
-
         setTimeout(() => {
             dispatch(updatePairCode(pairCodeText))
             dispatch(updateAnniversary(res.getPostable() as Pairs))
@@ -79,6 +74,12 @@ const AuthProvider = ({ children }: Props):JSX.Element => {
 
             setTimeout(() => {
                 dispatch(updateCheckLoading(false))
+
+                const ani = new Pairs({...pairs}).mainAnniversaryData
+
+                if(ani) {
+                    return dispatch(updatePageName('main'))
+                }
                 dispatch(updatePageName('init'))
             }, 3000)
         }, 1000)

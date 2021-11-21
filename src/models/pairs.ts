@@ -41,6 +41,7 @@ export default class Pairs extends Model {
 		this.data = data
 	}
 
+	//記念日データ取得
 	get mainAnniversaryData() {
 		if(this.anniversaries.length) {
 			const res =  linq.from(this.anniversaries).where(x => x.type == "anniversary").toArray()
@@ -50,6 +51,35 @@ export default class Pairs extends Model {
 			}
 		}
 		return undefined
+	}
+	//記念日タイトル
+	get mainAnniversaryDataTitle() {
+		const res = this.mainAnniversaryData
+		if(res){
+			return res.title
+		}
+		return ''
+	}
+
+	//今日までのカウント
+	countUntilToday = () => {
+		const d:Ani|undefined = this.mainAnniversaryData
+		if(d==undefined) return
+
+		const today = dayjs()
+		const aniDay = dayjs(d.date)
+		if(today.format('YYYY-MM-DD') == aniDay.format('YYYY-MM-DD')) {
+			return '1日目！'
+		}
+
+		dayjs.extend(utc)
+		dayjs.extend(duration)
+		const Y = today.diff(aniDay, 'years')
+		const M = today.subtract(Y, 'y').diff(aniDay, 'months')
+		const D = today.add(1,'d').subtract(Y, 'y').subtract(M, 'M').diff(aniDay, 'days')
+
+
+		return (Y > 0?Y+'年':'') + (M >0?(M + 'ヶ月'):'') + D + '日目'
 	}
 
 	onScheme() {
