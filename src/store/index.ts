@@ -2,7 +2,7 @@ import {configureStore, combineReducers} from '@reduxjs/toolkit'
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 
 import token from './modules/token'
-import {mainDateReducers} from './modules/mainDate'
+import {AnniversaryReducers} from './modules/anniversary'
 import {AsyncStorage} from "react-native";
 import {pairsReducers} from "./modules/pairs";
 
@@ -14,14 +14,14 @@ import {pairsReducers} from "./modules/pairs";
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
-    whitelist: ['pairs'] // Stateは`pairCode`のみStorageに保存する
+    whitelist: ['pairCode'] // Stateは`pairCode`のみStorageに保存する
 }
 
 const persistedReducer = persistReducer(
     persistConfig,
     combineReducers({
-        mainDate: mainDateReducers,
-        pairs: pairsReducers,
+        anniversary: AnniversaryReducers,
+        pairCode: pairsReducers,
     })
 )
 

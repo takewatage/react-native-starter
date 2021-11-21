@@ -13,6 +13,7 @@ import {HeaderCloseBtn} from '../components/HeaderCloseBtn'
 import {HeaderBackBtn} from "../components/HeaderBackBtn";
 import {HomeScreen} from "../screens/home";
 import FirestoreService from "../services/FirestoreService";
+import {InitScreen} from "../screens/home/InitScreen";
 
 
 const Stack = createStackNavigator();
@@ -22,6 +23,17 @@ export const Navigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => 
         <NavigationContainer
             theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
             <RootNavigator />
+        </NavigationContainer>
+    )
+}
+
+export const InitNavigator = ({ colorScheme }: { colorScheme: ColorSchemeName }) => {
+    return(
+        <NavigationContainer
+            theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name="Init" component={InitScreen} />
+            </Stack.Navigator>
         </NavigationContainer>
     )
 }

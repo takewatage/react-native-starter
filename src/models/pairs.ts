@@ -4,6 +4,8 @@ import duration from 'dayjs/plugin/duration'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from "dayjs/plugin/relativeTime"
 import 'dayjs/locale/ja';
+import Ani from "./ani";
+import linq from 'linq'
 
 dayjs.extend(utc)
 dayjs.extend(duration)
@@ -13,10 +15,14 @@ dayjs.locale('ja');
 
 export default class Pairs extends Model {
 
-	id?: string = ''
-	title?: string = ''
-	date?: string = ''
+	id: string = ''
+	user1Name: string = ''
+	user2Name: string = ''
+	user1Img: string = ''
+	user2Img: string = ''
 
+	anniversaries:Ani[] = []
+	scheme: boolean = false
 
 	constructor(data: object) {
 		super()
@@ -24,39 +30,37 @@ export default class Pairs extends Model {
 		this.convert = false
 
 		this.fillable = [
-			'id', 'title', 'date'
+			'id', 'user1Name', 'user2Name', 'user1Img', 'user2Img', 'anniversaries'
 		]
 		this.presents = []
+
+		this.arrayMap(
+			new ArrayMappable(Ani).bind('anniversaries')
+		)
 
 		this.data = data
 	}
 
+	get mainAnniversaryData() {
+		if(this.anniversaries.length) {
+			const res =  linq.from(this.anniversaries).where(x => x.type == "anniversary").toArray()
+			console.log("res",res)
+			if(res.length) {
+				return res[0]
+			}
+		}
+		return undefined
+	}
+
+	onScheme() {
+		this.scheme = true
+		return this
+	}
 
 	beforePostable() {
 	}
 
 	afterPostable() {
 
-	}
-
-	//今日までのカウント
-	countUntilToday = () => {
-
-		const today = dayjs()
-		const aniDay = dayjs(this.date)
-		if(today.format('YYYY-MM-DD') == aniDay.format('YYYY-MM-DD')) {
-			return '1日目！'
-		}
-
-		dayjs.extend(utc)
-		dayjs.extend(duration)
-		const Y = today.diff(aniDay, 'years')
-		const M = today.subtract(Y, 'y').diff(aniDay, 'months')
-		const D = today.add(1,'d').subtract(Y, 'y').subtract(M, 'M').diff(aniDay, 'days')
-
-
-
-
-		return Y + '年' + M + 'ヶ月' + D + '日'
 	}
 }

@@ -11,9 +11,10 @@ import {
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Icon, ListItem, Overlay} from "react-native-elements";
-import {reset} from "../store/modules/mainDate";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigation} from '@react-navigation/native'
+import {reset} from '../store/modules/pairs'
+import {RootState} from "../store";
 
 export type Props = {
     isOpen: boolean,
@@ -26,6 +27,7 @@ const SideMenu:React.VFC<Props> = (props) => {
     const isOpen = props.isOpen
     const dispatch = useDispatch()
     const navigation = useNavigation()
+    const {pairCode} = useSelector<RootState, {pairCode: string}>((state:RootState) => state.pairCode)
 
     useState(() => {
     })
@@ -36,7 +38,7 @@ const SideMenu:React.VFC<Props> = (props) => {
 
                 setTimeout(async () => {
                     setLoad(true)
-                    await dispatch(reset())
+                    // await dispatch(reset())
                     setLoad(true)
                 }, 1000)
                 }},
@@ -47,6 +49,14 @@ const SideMenu:React.VFC<Props> = (props) => {
     // 編集
     const onEdit = () => {
         navigation.navigate("TopEditScreen")
+    }
+
+    const onLogOut = async() => {
+        setTimeout(async () => {
+            setLoad(true)
+            await dispatch(reset())
+            setLoad(true)
+        }, 1000)
     }
 
     return (
@@ -90,6 +100,22 @@ const SideMenu:React.VFC<Props> = (props) => {
                         </ListItem.Content>
                     </ListItem>
                 </TouchableHighlight>
+
+                <TouchableHighlight
+                    underlayColor={"pink"}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        onLogOut()
+                    }}
+                >
+                    <ListItem bottomDivider>
+                        <ListItem.Content>
+                            <ListItem.Title>ログアウト</ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                </TouchableHighlight>
+
+                <Text>{pairCode}</Text>
             </View>
 
             <Overlay

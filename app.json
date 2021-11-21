@@ -41,7 +41,7 @@
         "storageBucket": "anniversaryapp-c0cfc.appspot.com",
         "appId": "1:1080034645500:web:1ac8885056ba5ac9fd4e79",
         "messagingSenderId": "1080034645500",
-        "anniversaryCollection": "anniversary",
+        "anniversaryCollection": "anniversaries",
         "pairsCollection": "pairs"
       }
     }

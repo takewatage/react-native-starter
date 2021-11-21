@@ -2,6 +2,8 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 import 'firebase/storage'
+import Pairs from "../models/pairs";
+import Ani from "../models/ani";
 // import C from 'expo-constants'
 
 
@@ -20,7 +22,7 @@ class FirestoreService {
     pairsCollection = ''
 
     constructor() {
-        this.anniversaryCollection = 'anniversary'
+        this.anniversaryCollection = 'anniversaries'
         this.pairsCollection = 'pairs'
     }
 
@@ -45,33 +47,50 @@ class FirestoreService {
 
 
 
-    async getAnniversary() {
-        await window.db.collection(this.anniversaryCollection)
+    async getAnniversary(code: string) {
+        const anis:Ani[] = []
+        await window.db
+            .collection(this.pairsCollection)
+            .doc(code)
+            .collection(this.anniversaryCollection)
             .get()
             .then(res => {
                 res.forEach(q => {
-                    console.log(q.data())
+                    anis.push(new Ani(q.data()))
                 })
             })
+        return anis
     }
 
-    async checkPairCode(code: string) {
-        let pairs = false
+    async getPairs(code: string) {
+        let pairs:Pairs|undefined = new Pairs({}).getPostable() as Pairs
         await window.db.collection(this.pairsCollection)
             .doc(code)
             .get()
             .then(res => {
+                pairs = undefined
                 if(res.exists) {
-                    console.log(res.data())
-                    pairs = true
+                    pairs = new Pairs({...res.data()})
                 }
             })
             .catch(e => {
                 console.log(e)
-                pairs = false
+                pairs = undefined
             })
-
         return pairs
+    }
+
+    async createAnniversary(code: string, pairs: Pairs) {
+
+        const res:Ani|undefined = pairs.mainAnniversaryData
+        if(res==undefined) return
+
+        await window.db.collection(this.pairsCollection)
+            .doc(code)
+            .collection(this.anniversaryCollection)
+            .doc()
+            .set({...res.onScheme().getPostable()}, { merge: true })
+
     }
 
 

@@ -26,7 +26,7 @@ const slice = createSlice({
             console.log(payload)
             return {...state, pairCode: payload}
         },
-        reset: (state) => {
+        resetPairCode: (state) => {
             console.log("-reset-")
             return {...state, pairCode: ''}
         }
@@ -34,7 +34,7 @@ const slice = createSlice({
 })
 
 export const {
-    updatePairCode, reset
+    updatePairCode, resetPairCode
 } = slice.actions
 
 export const pairsReducers = slice.reducer

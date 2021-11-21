@@ -6,7 +6,7 @@ import {
     TextInput,
     NativeSyntheticEvent,
     TextInputChangeEventData,
-    TouchableOpacity, ActivityIndicator, Alert, Platform
+    TouchableOpacity, ActivityIndicator, Alert, Platform, ImageBackground
 } from "react-native";
 import {Button, Icon, Image, Input, Overlay} from "react-native-elements";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -14,10 +14,14 @@ import Layout from "../../constants/Layout";
 import DateTimePicker, {Event} from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs'
 import PageLoading from "../../components/pageLoading";
-import {updateMain} from '../../store/modules/mainDate'
 import {useDispatch, useSelector} from "react-redux";
 import Ani from "../../models/ani";
 import ActionSheet from "react-native-actions-sheet";
+import FirestoreService from "../../services/FirestoreService";
+import {RootState} from "../../store";
+import Pairs from "../../models/pairs";
+import {resetPairCode} from '../../store/modules/pairs'
+import {resetAnniversary} from '../../store/modules/anniversary'
 
 
 
@@ -30,6 +34,7 @@ export const InitScreen = () => {
     const [show, setShow] = useState(false);
     const actionRef = React.useRef(null)
 
+    const {pairs} = useSelector<RootState, {pairs: Pairs}>((state:RootState) => state.anniversary)
     const dispatch = useDispatch()
 
     const onChange = (event:Event, selectedDate:any) => {
@@ -50,15 +55,42 @@ export const InitScreen = () => {
             return
         }
 
+        // setLoad(true)
+
+        let _pairs = new Pairs({...pairs}) as Pairs
+        let _ani: Ani = new Ani({
+            type: 'anniversary',
+            date: dayjs(date).format('YYYY-MM-DD'),
+            title: '記念日',
+            subTitle: ''
+        })
+        console.log('_pairs', _pairs.anniversaries)
+        console.log('_ani', _ani)
+
+        _pairs.anniversaries = [_ani]
+
+        console.log(_pairs)
+
         setLoad(true)
-        setTimeout(() => {
-            dispatch(updateMain({
-                id: 'firstDate',
-                title: '記念日',
-                date: dayjs(date).format("YYYY-MM-DD")
-            }))
+        try {
+            await FirestoreService.createAnniversary(_pairs.id, _pairs)
             setLoad(false)
-        }, 1000)
+        }
+        catch (e) {
+            Alert.alert("データベースエラー", "", [{onPress: () => {
+                    setLoad(false)
+            }}])
+        }
+
+
+        // setTimeout(() => {
+        //     dispatch(createAnniversary({
+        //         id: 'firstDate',
+        //         title: '記念日',
+        //         date: dayjs(date).format("YYYY-MM-DD")
+        //     }))
+        //     setLoad(false)
+        // }, 1000)
     }
 
 
@@ -72,84 +104,105 @@ export const InitScreen = () => {
     };
 
     return (
-        <View style={styles.noScreen}>
-            <Text style={styles.topText}>
-                あなたの記念日を{"\n"}登録してください。
-            </Text>
+        <View style={[styles.container]}>
+            <ImageBackground style={{width: '100%', height: '100%'}} resizeMode="cover"
+                             source={require('../../../assets/images/bg/bg.jpeg')}>
 
-            <TouchableOpacity activeOpacity={0.8} onPress={() => showDatepicker()}>
-                <View style={styles.calenderInput}>
-                    <Icon name={'calendar'} type={'feather'} color={"#fff"} style={{marginRight:5}}/>
-                    <Text style={{color:"#fff", fontSize: 18}}>{dayjs(date).format("YYYY年 MM月 DD日")}</Text>
+                <View style={styles.noScreen}>
+                    <Button title={'delete'} onPress={() => {
+                        dispatch(resetPairCode())
+                        dispatch(resetAnniversary())
+                    }}/>
+
+                    <Text style={styles.topText}>
+                        ふたりの記念日を{"\n"}登録してください
+                    </Text>
+
+                    <TouchableOpacity activeOpacity={0.8} onPress={() => showDatepicker()}>
+                        <View style={styles.calenderInput}>
+                            <Icon name={'calendar'} type={'feather'} color={"#fff"} style={{marginRight:5}}/>
+                            <Text style={{color:"#fff", fontSize: 18}}>{dayjs(date).format("YYYY年 MM月 DD日")}</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    {show &&
+                    <DateTimePicker
+                        style={{width: Layout.window.width}}
+                        value={date}
+                        is24Hour={true}
+                        locale="ja"
+                        display={Platform.OS == 'ios' ? 'spinner' : 'default'}
+                        minuteInterval={10}
+                        onTouchCancel={() => {
+                            console.log("cancel")
+                        }}
+                        onChange={onChange}
+                        onAccessibilityAction={() => {
+                            console.log("cancel!!!!")
+                        }}
+                    />
+                    }
+
+                    <Button
+                        activeOpacity={0.8}
+                        title="決定"
+                        buttonStyle={{backgroundColor: "pink"}}
+                        containerStyle={{width: 200, borderRadius: 50}}
+                        disabled={!date}
+                        onPress={() => onOK()}
+                    />
+
+                    <ActionSheet
+                        ref={actionRef}
+                        gestureEnabled
+                        delayActionSheetDraw={true}
+                    >
+                        <DateTimePicker
+                            style={{width: Layout.window.width}}
+                            value={date}
+                            textColor={'#000'}
+                            is24Hour={true}
+                            locale="ja"
+                            display={Platform.OS == 'ios' ? 'spinner' : 'default'}
+                            minuteInterval={10}
+                            onTouchCancel={() => {
+                                console.log("cancel")
+                            }}
+                            onChange={onChange}
+                            onAccessibilityAction={() => {
+                                console.log("cancel!!!!")
+                            }}
+                        />
+                    </ActionSheet>
+
+                    {/*<View>*/}
+                    {/*    <Overlay*/}
+                    {/*        isVisible={loading}*/}
+                    {/*        overlayStyle={{elevation: 0,backgroundColor: 'transparent'}}*/}
+                    {/*        style={{ flex:1, width: '100%'}}>*/}
+
+                    {/*        <LottieView style={{width: 100, opacity: 0.7}} source={require('../../assets/lottie/pink-loading.json')} autoPlay loop />*/}
+                    {/*    </Overlay>*/}
+                    {/*    <Overlay*/}
+                    {/*        isVisible={completeLoading}*/}
+                    {/*        overlayStyle={{elevation: 0,backgroundColor: 'transparent'}}*/}
+                    {/*        style={{ flex:1, width: '100%'}}>*/}
+
+                    {/*        <LottieView style={{width: 100,}} source={require('../../assets/lottie/check-mark-confirm-circle-with-pop.json')} autoPlay />*/}
+                    {/*    </Overlay>*/}
+                    {/*</View>*/}
                 </View>
-            </TouchableOpacity>
-
-            {show &&
-            <DateTimePicker
-                style={{width: Layout.window.width}}
-                value={date}
-                is24Hour={true}
-                locale="ja"
-                display={Platform.OS == 'ios' ? 'spinner' : 'default'}
-                minuteInterval={10}
-                onTouchCancel={() => {
-                    console.log("cancel")
-                }}
-                onChange={onChange}
-                onAccessibilityAction={() => {
-                    console.log("cancel!!!!")
-                }}
-            />
-            }
-
-            <Button
-                activeOpacity={0.8}
-                title="決定"
-                buttonStyle={{backgroundColor: "pink"}}
-                containerStyle={{width: 200, borderRadius: 50}}
-                disabled={!date}
-                onPress={() => onOK()}
-            />
-
-            <ActionSheet
-                ref={actionRef}
-                gestureEnabled
-                delayActionSheetDraw={true}
-            >
-                <DateTimePicker
-                    style={{width: Layout.window.width}}
-                    value={date}
-                    textColor={'#000'}
-                    is24Hour={true}
-                    locale="ja"
-                    display={Platform.OS == 'ios' ? 'spinner' : 'default'}
-                    minuteInterval={10}
-                    onTouchCancel={() => {
-                        console.log("cancel")
-                    }}
-                    onChange={onChange}
-                    onAccessibilityAction={() => {
-                        console.log("cancel!!!!")
-                    }}
-                />
-            </ActionSheet>
-
-            <Overlay
-                isVisible={load}
-                overlayStyle={{backgroundColor: 'transparent'}}
-                style={{ flex:1}}>
-
-                <ActivityIndicator
-                    color="pink"
-                    style={{backgroundColor: "transparent"}}
-                    size={'large'}
-                    animating={true} />
-            </Overlay>
+            </ImageBackground>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignContent: 'center'
+    },
+
     topText: {
         color: '#ffffff',
         fontSize: 20,

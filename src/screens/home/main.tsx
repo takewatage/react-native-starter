@@ -8,13 +8,14 @@ import {Button, Icon, Image} from "react-native-elements";
 import Ripple from "react-native-material-ripple";
 import {FirstScreen, SecondScreen} from "./index";
 import Ani from "../../models/ani";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {InitScreen} from "./InitScreen";
-import {IMainDate} from "../../store/modules/mainDate";
 import MenuDrawer from 'react-native-side-drawer'
 import SideMenu from "../../components/SideMenu";
 import FirestoreService from "../../services/FirestoreService";
+import Pairs from "../../models/pairs";
+import {fetchAnniversary, updateAnniversary} from "../../store/modules/anniversary"
 
 
 
@@ -25,9 +26,14 @@ const renderScene = SceneMap({
 
 export default function HomeScreen() {
     const [pageIndex, setPageIndex] = useState(0)
-    const {myAnniversary} = useSelector<RootState, {myAnniversary: IMainDate}>((state:RootState) => state.mainDate)
+    const {pairs} = useSelector<RootState, {pairs: Pairs}>((state:RootState) => state.anniversary)
     const [isCheckValue, setCheckValue] = useState(false)
     const [isSideMenu, setIsSideMenu] = useState(false)
+    const {pairCode} = useSelector<RootState, {pairCode: string}>((state:RootState) => state.pairCode)
+
+    const [pairData, setPairData] = useState<Pairs>(new Pairs({}))
+
+    const dispatch = useDispatch()
 
     const [routes] = React.useState([
         { key: 'first', title: '記念日' },
@@ -36,14 +42,21 @@ export default function HomeScreen() {
     const safeArea = useSafeAreaInsets()
 
     React.useEffect(() => {
-        console.log(myAnniversary.id)
-        if(myAnniversary.id) {
-            setCheckValue(true)
-        } else {
-            setCheckValue(false)
-        }
 
-    }, [myAnniversary]);
+    }, [])
+
+    React.useEffect(() => {
+        setPairData(new Pairs({...pairs}))
+    }, [])
+
+    const fetch = async () => {
+        // dispatch(fetchAnniversary({code: pairCode}))
+
+        // console.log("fetch")
+        // const res = await FirestoreService.getPairs(pairCode)
+        // console.log(new Pairs(res).getPostable())
+        // dispatch(updateAnniversary(res.getPostable() as Pairs))
+    }
 
     const onMenu = () => {
         console.log("onMenu!!!!")
@@ -115,17 +128,11 @@ export default function HomeScreen() {
     return (
         <View style={[styles.container]}>
             <ImageBackground style={{width: '100%', height: '100%'}} resizeMode="cover"
-                             source={require('../../../assets/images/bg/bg1.jpeg')}>
+                             source={require('../../../assets/images/bg/bg.jpeg')}>
 
-                    {isCheckValue?
-                        (
-                            mainView()
-                        ):
-                        (
-                            <InitScreen/>
-                        )
-
-                    }
+                <View>
+                    <Text>OKOKOKOKOKOK</Text>
+                </View>
             </ImageBackground>
         </View>
     );

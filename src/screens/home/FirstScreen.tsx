@@ -3,33 +3,31 @@ import {Text, View, StyleSheet} from "react-native";
 import {Button, Icon, Image} from "react-native-elements";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import {useDispatch, useSelector} from "react-redux";
-import {IMainDate, reset} from '../../store/modules/mainDate'
 import {NavigationProp, useNavigation} from '@react-navigation/native'
 import {RootState} from "../../store";
 import Ani from "../../models/ani";
 import dayjs from 'dayjs'
 import Ripple from "react-native-material-ripple";
 import FirestoreService from "../../services/FirestoreService";
+import Pairs from "../../models/pairs";
 
 export const FirstScreen = () => {
     const safeArea = useSafeAreaInsets()
     const navigation = useNavigation()
-    const {myAnniversary} = useSelector<RootState, {myAnniversary: IMainDate}>((state:RootState) => state.mainDate)
-    const [ani, setAni] = useState(new Ani({}).getPostable() as Ani)
+    const {pairs} = useSelector<RootState, {pairs: Pairs}>((state:RootState) => state.anniversary)
 
     useEffect(() => {
-        setAni(new Ani(myAnniversary))
+
     }, [])
 
     const f = async () => {
-        console.log("test111")
-        await FirestoreService.getAnniversary()
+
     }
 
     return (
         <>
         {
-            ani.id?
+            pairs.id?
                 (<View style={{ flex: 1, backgroundColor: 'transparent' , justifyContent: 'center', height:'100%'}} >
                     <View style={[{flexDirection: 'row', justifyContent: 'center'}, styles.position]}>
                         <View style={styles.imgBox}>
@@ -43,9 +41,9 @@ export const FirstScreen = () => {
                         </View>
                     </View>
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={[styles.topText, {fontSize: 18, }]}>{myAnniversary.title}</Text>
-                        <Text style={[styles.topText, {fontSize: 40, fontWeight: 'bold', letterSpacing: 2}]}>{ani.countUntilToday()}</Text>
-                        <Text style={[styles.topText, {}]}>{dayjs(ani.date).format('YYYY年MM月DD日')}</Text>
+                        {/*<Text style={[styles.topText, {fontSize: 18, }]}>{myAnniversary.title}</Text>*/}
+                        {/*<Text style={[styles.topText, {fontSize: 40, fontWeight: 'bold', letterSpacing: 2}]}>{ani.countUntilToday()}</Text>*/}
+                        {/*<Text style={[styles.topText, {}]}>{dayjs(ani.date).format('YYYY年MM月DD日')}</Text>*/}
                     </View>
                 </View>)
                 :

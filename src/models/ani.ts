@@ -13,24 +13,29 @@ dayjs.locale('ja');
 
 export default class Ani extends Model {
 
-	id?: string = ''
-	title?: string = ''
-	date?: string = ''
+	title: string = ''
+	date: string = ''
+	subTitle: string = ''
+	type: string = ''
 
+	scheme: boolean = false
 
 	constructor(data: object) {
 		super()
 
 		this.convert = false
-
 		this.fillable = [
-			'id', 'title', 'date'
+			'type', 'title', 'date', 'subTitle'
 		]
 		this.presents = []
 
 		this.data = data
 	}
 
+	onScheme() {
+		this.scheme = true
+		return this
+	}
 
 	beforePostable() {
 	}
